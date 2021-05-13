@@ -1,8 +1,12 @@
 use jukebox::Settings;
+use std::process::exit;
 
 pub fn main() {
 	let _settings = match Settings::new() {
 		Ok(set) => set,
-		Err(err) => panic!("Error in config parsing: {}", err.to_string()),
+		Err(err) => {
+			eprintln!("Error reading configuration: {}", err);
+			exit(115);
+		}
 	};
 }

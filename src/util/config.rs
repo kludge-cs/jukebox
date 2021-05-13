@@ -1,8 +1,9 @@
 extern crate config;
 extern crate serde;
 
-use config::{Config, ConfigError, Environment, File, FileFormat};
+use config::{Config, ConfigError, Environment, File, FileFormat, Source};
 use serde::{Deserialize, Serialize};
+use std::process::exit;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Server {
@@ -71,11 +72,24 @@ pub struct Settings {
 impl Settings {
 	pub fn new() -> Result<Self, ConfigError> {
 		let mut settings = Config::default();
-		settings
-			.merge(Config::try_from(&Self::default())?)?
-			.merge(File::new("application", FileFormat::Yaml).required(false))?
-			.merge(File::new("jukebox", FileFormat::Toml).required(false))?
-			.merge(Environment::with_prefix("jukebox"))?;
+
+		settings.merge(Config::try_from(&Settings::default())?)?;
+
+		let sources = vec![
+			File::new("application", FileFormat::Yaml).required(false),
+			File::new("jukebox", FileFormat::Toml).required(false),
+		];
+		for file in sources {
+			match settings.merge(file) {
+				Err(ConfigError::FileParse { uri, cause }) => {
+					eprintln!("Error parsing {}: {}", uri.unwrap(), cause);
+					exit(115);
+				}
+				_ => {}
+			}
+		}
+
+		settings.merge(Environment::with_prefix("jukebox"))?;
 		settings.try_into()
 	}
 }
