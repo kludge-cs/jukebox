@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize)]
 struct Server {
 	port: u16,
-	address: String,
+	address: Box<str>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -22,17 +22,19 @@ struct JukeboxSources {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[allow(non_snake_case)]
 struct JukeboxRatelimit {
-	ipBlocks: Option<Vec<String>>,
-	excludedIps: Option<Vec<String>>,
-	strategy: String,
+	ipBlocks: Option<Vec<Box<str>>>,
+	excludedIps: Option<Vec<Box<str>>>,
+	strategy: Box<str>,
 	searchTriggersFail: bool,
 	retryLimit: i8,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[allow(non_snake_case)]
 struct JukeboxServer {
-	password: Option<String>,
+	password: Option<Box<str>>,
 	sources: JukeboxSources,
 	bufferDurationMs: u32,
 	youtubePlaylistLoadLimit: u8,
@@ -49,13 +51,13 @@ struct Jukebox {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct LoggingLevel {
-	root: String,
-	lavalink: String,
+	root: Box<str>,
+	lavalink: Box<str>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Logging {
-	path: Option<String>,
+	path: Option<Box<str>>,
 	level: LoggingLevel,
 }
 
@@ -83,11 +85,13 @@ impl Default for Settings {
 		Settings {
 			server: Server {
 				port: 2333,
-				address: "0.0.0.0".to_string(),
+				address: "0.0.0.0".to_owned().into_boxed_str(),
 			},
 			lavalink: Jukebox {
 				server: JukeboxServer {
-					password: Some("youshallnotpass".to_string()),
+					password: Some(
+						"youshallnotpass".to_owned().into_boxed_str(),
+					),
 					sources: JukeboxSources {
 						youtube: true,
 						bandcamp: true,
@@ -105,7 +109,7 @@ impl Default for Settings {
 					ratelimit: JukeboxRatelimit {
 						ipBlocks: None,
 						excludedIps: None,
-						strategy: "RotateOnBan".to_string(),
+						strategy: "RotateOnBan".to_owned().into_boxed_str(),
 						searchTriggersFail: true,
 						retryLimit: -1,
 					},
@@ -114,8 +118,8 @@ impl Default for Settings {
 			logging: Logging {
 				path: None,
 				level: LoggingLevel {
-					root: "INFO".to_string(),
-					lavalink: "INFO".to_string(),
+					root: "INFO".to_owned().into_boxed_str(),
+					lavalink: "INFO".to_owned().into_boxed_str(),
 				},
 			},
 		}
