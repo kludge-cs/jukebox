@@ -10,7 +10,7 @@ action is as follows:
 - **1**: This type of vulnerability is insignificant enough to leave as an issue
   in the repository using the provided "Security Report" template.
 - **2**: This type of vulnerability is moderately serious and enough to warrant
-  filing a report privately to `nytelife@protonmail.com`
+  filing a report privately to `security@k-cs.co`
 - **3**: This type of vulnerability is of the utmost severity and should be
   filed directly to our team via one of our support channels (DO NOT post
   publicly, message one of our available engineers instead).
