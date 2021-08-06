@@ -1,17 +1,18 @@
 extern crate config;
 extern crate serde;
 
-use config::{Config, ConfigError, Environment, File, FileFormat};
+pub use config::{Config, ConfigError, Environment, File, FileFormat};
 use serde::{Deserialize, Serialize};
-use std::process::exit;
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Server {
 	port: u16,
 	address: Box<str>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct JukeboxSources {
 	youtube: bool,
 	bandcamp: bool,
@@ -23,46 +24,50 @@ struct JukeboxSources {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-#[allow(non_snake_case)]
+#[serde(rename_all = "camelCase")]
 struct JukeboxRatelimit {
-	ipBlocks: Option<Vec<Box<str>>>,
-	excludedIps: Option<Vec<Box<str>>>,
+	ip_blocks: Option<Vec<Box<str>>>,
+	excluded_ips: Option<Vec<Box<str>>>,
 	strategy: Box<str>,
-	searchTriggersFail: bool,
-	retryLimit: i8,
+	search_triggers_fail: bool,
+	retry_limit: i8,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-#[allow(non_snake_case)]
+#[serde(rename_all = "camelCase")]
 struct JukeboxServer {
 	password: Option<Box<str>>,
 	sources: JukeboxSources,
-	bufferDurationMs: u32,
-	youtubePlaylistLoadLimit: u8,
-	playerUpdateInterval: u8,
-	youtubeSearchEnabled: bool,
-	soundcloudSearchEnabled: bool,
+	buffer_duration_ms: u32,
+	youtube_playlist_load_limit: u8,
+	player_update_interval: u8,
+	youtube_search_enabled: bool,
+	soundcloud_search_enabled: bool,
 	ratelimit: JukeboxRatelimit,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Jukebox {
 	server: JukeboxServer,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct LoggingLevel {
 	root: Box<str>,
 	lavalink: Box<str>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Logging {
 	path: Option<Box<str>>,
 	level: LoggingLevel,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Settings {
 	server: Server,
 	lavalink: Jukebox,
@@ -80,10 +85,7 @@ impl Settings {
 			File::new("jukebox", FileFormat::Toml).required(false),
 		];
 		for f in srcs {
-			if let Err(ConfigError::FileParse { uri, cause }) = conf.merge(f) {
-				eprintln!("Error parsing {}: {}", uri.unwrap(), cause);
-				exit(115);
-			}
+			conf.merge(f)?;
 		}
 
 		conf.merge(Environment::with_prefix("jukebox"))?;
@@ -112,17 +114,17 @@ impl Default for Settings {
 						http: true,
 						local: false,
 					},
-					bufferDurationMs: 400,
-					youtubePlaylistLoadLimit: 6,
-					playerUpdateInterval: 5,
-					youtubeSearchEnabled: true,
-					soundcloudSearchEnabled: true,
+					buffer_duration_ms: 400,
+					youtube_playlist_load_limit: 6,
+					player_update_interval: 5,
+					youtube_search_enabled: true,
+					soundcloud_search_enabled: true,
 					ratelimit: JukeboxRatelimit {
-						ipBlocks: None,
-						excludedIps: None,
+						ip_blocks: None,
+						excluded_ips: None,
 						strategy: "RotateOnBan".to_owned().into_boxed_str(),
-						searchTriggersFail: true,
-						retryLimit: -1,
+						search_triggers_fail: true,
+						retry_limit: -1,
 					},
 				},
 			},

@@ -23,26 +23,26 @@ impl TrackInfo {
 }
 
 pub enum TrackState {
-	INACTIVE,
-	LOADING,
-	PLAYING,
-	SEEKING,
-	STOPPING,
-	FINISHED,
+	Inactive,
+	Loading,
+	Playing,
+	Seeking,
+	Stopped,
+	Finished,
 }
 
 pub enum TrackEndReason {
-	FINISHED,
-	LOAD_FAILED,
-	STOPPED,
-	REPLACED,
-	CLEANUP,
+	Finished,
+	LoadFailed,
+	Stopped,
+	Replaced,
+	Cleanup,
 }
 
 impl TrackEndReason {
-	pub fn start_next(&self) -> bool {
+	pub fn can_start_next(&self) -> bool {
 		match self {
-			Self::FINISHED | Self::LOAD_FAILED => true,
+			Self::Finished | Self::LoadFailed => true,
 			_ => false,
 		}
 	}

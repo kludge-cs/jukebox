@@ -1,11 +1,15 @@
-mod util;
-pub use util::config::Settings;
+mod util {
+	pub mod config;
+}
+pub use util::config::{ConfigError, Settings};
 
-mod player {
-	mod track {
-		mod meta;
-		mod playback;
+pub mod player {
+	pub mod track {
+		pub mod meta;
+		pub mod playback;
 	}
 }
+
+mod server {}
 
 pub mod err;
