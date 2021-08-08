@@ -39,6 +39,7 @@ trait FrameConsumer {
 trait FrameBuffer: FrameProvider + FrameConsumer {
 	fn new(duration: u8, format: AudioFormat, stopping: bool) -> Self;
 	fn remaining_capacity(&self) -> u8;
+	fn full_capacity(&self) -> u8;
 	fn wait_for_termination(&self) -> Result<(), PlayerFrameError>;
 	fn terminate_on_empty(&self);
 	fn clear_on_insert(self);
