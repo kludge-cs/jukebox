@@ -85,6 +85,7 @@ impl Settings {
 			File::new("jukebox", FileFormat::Toml).required(false),
 		];
 		for f in srcs {
+			// TODO: establish why this fails silently instead of erroring
 			conf.merge(f)?;
 		}
 
