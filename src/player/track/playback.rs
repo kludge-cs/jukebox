@@ -1,15 +1,17 @@
 use crate::err::PlayerFrameError;
 
+// TODO: implement audio formats
+pub type AudioFormat = Box<str>;
+
 pub struct Frame {
 	timecode: u64, // time in ms
 	volume: u8,
 	data: Vec<u8>, // byte array of frame data
-	// TODO: implement audio formats
-	format: Box<str>,
+	format: AudioFormat,
 	terminator: bool,
 }
 
-trait FrameProvider {
+pub trait FrameProvider {
 	fn provide(self) -> Option<Frame>;
 	fn provide_with(
 		self,
@@ -35,11 +37,12 @@ trait FrameConsumer {
 }
 
 trait FrameBuffer: FrameProvider + FrameConsumer {
-	fn new(duration: u8, format: Box<str>, stopping: bool) -> Self;
+	fn new(duration: u8, format: AudioFormat, stopping: bool) -> Self;
 	fn remaining_capacity(&self) -> u8;
 	fn wait_for_termination(&self) -> Result<(), PlayerFrameError>;
 	fn terminate_on_empty(&self);
 	fn clear_on_insert(self);
+	fn will_clear_on_insert(self) -> bool;
 	fn clear(self);
 	fn has_received(&self) -> bool;
 	fn last_input_timecode(&self) -> Option<u64>;
