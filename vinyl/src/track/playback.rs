@@ -4,11 +4,11 @@ use crate::err::PlayerFrameError;
 pub type AudioFormat = Box<str>;
 
 pub struct Frame {
-	timecode: u64, // time in ms
-	volume: u8,
-	data: Vec<u8>, // byte array of frame data
-	format: AudioFormat,
-	terminator: bool,
+	pub timecode: u64, // time in ms
+	pub volume: u8,
+	pub data: Vec<u8>, // byte array of frame data
+	pub format: AudioFormat,
+	pub terminator: bool,
 }
 
 pub trait FrameProvider {
@@ -27,16 +27,16 @@ pub trait FrameProvider {
 	) -> Result<bool, PlayerFrameError>;
 }
 
-trait FrameRebuilder {
+pub trait FrameRebuilder {
 	fn rebuild(frame: Frame) -> Frame;
 }
 
-trait FrameConsumer {
+pub trait FrameConsumer {
 	fn consume(self, frame: Frame) -> Result<(), PlayerFrameError>;
 	fn rebuild<T: FrameRebuilder>(self, rebuilder: T);
 }
 
-trait FrameBuffer: FrameProvider + FrameConsumer {
+pub trait FrameBuffer: FrameProvider + FrameConsumer {
 	fn new(duration: u8, format: AudioFormat, stopping: bool) -> Self;
 	fn remaining_capacity(&self) -> u8;
 	fn full_capacity(&self) -> u8;

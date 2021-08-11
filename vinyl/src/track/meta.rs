@@ -1,12 +1,12 @@
 pub trait Loadable {}
 
 pub struct TrackInfo {
-	title: String,
-	author: String,
-	length: Option<u64>,
-	id: String,
-	is_stream: bool,
-	uri: String,
+	pub title: String,
+	pub author: String,
+	pub length: Option<u64>,
+	pub id: String,
+	pub is_stream: bool,
+	pub uri: String,
 }
 
 impl TrackInfo {

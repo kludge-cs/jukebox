@@ -1,15 +1,10 @@
-mod util {
+pub mod util {
 	pub mod config;
 }
 pub use util::config::{ConfigError, Settings};
 
-pub mod player {
-	pub mod track {
-		pub mod meta;
-		pub mod playback;
-	}
-}
+pub use vinyl as player;
 
-mod server {}
+pub mod server {}
 
 pub mod err;

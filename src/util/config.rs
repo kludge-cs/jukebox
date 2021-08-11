@@ -1,6 +1,3 @@
-extern crate config;
-extern crate serde;
-
 pub use config::{Config, ConfigError, Environment, File, FileFormat};
 use serde::{Deserialize, Serialize};
 
