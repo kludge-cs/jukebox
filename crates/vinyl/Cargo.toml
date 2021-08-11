@@ -2,9 +2,9 @@
 name = "vinyl"
 version = "0.1.0"
 authors = [
-	"Tyler J. Russell <nytelife@protonmail.com>",
+	"Tyler J. Russell <t@k-cs.co>",
 	"doge <doge@helper.wtf>",
-	"Stitch07 (github.com/stitch07)",
+	"Stitch (github.com/soumil-07)",
 	"Pyrotechniac <owenbellish@gmail.com>"
 ]
 edition = "2018"

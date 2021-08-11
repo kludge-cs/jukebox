@@ -1,20 +1,18 @@
 [package]
-name = "jukebox"
+name = "jukebox-workspace"
 version = "0.1.0"
 authors = [
-	"Tyler J. Russell <nytelife@protonmail.com>",
+	"Tyler J. Russell <t@k-cs.co>",
 	"doge <doge@helper.wtf>",
-	"Stitch07 (github.com/stitch07)",
+	"Stitch (github.com/soumil-07)",
 	"Pyrotechniac <owenbellish@gmail.com>"
 ]
 edition = "2018"
 license = "MIT"
 
-[dependencies]
-actix-web = "3.3.2"
-config = { version = "0.11.0", default-features = false, features = ["yaml", "toml"] }
-die = "0.2.0"
-log = "0.4.14"
-serde = { version = "1.0.125", default-features = false, features = ["derive"] }
-thiserror = "1.0.25"
-vinyl = { path = "vinyl" }
+[lib]
+path = "crates/jukebox/src/lib.rs"
+
+[workspace]
+members = ["crates/*"]
+default-members = ["crates/jukebox"]

@@ -1,0 +1,19 @@
+[package]
+name = "jukebox"
+version = "0.1.0"
+authors = [
+	"Tyler J. Russell <t@k-cs.co>",
+	"doge <doge@helper.wtf>",
+	"Stitch (github.com/soumil-07)",
+	"Pyrotechniac <owenbellish@gmail.com>"
+]
+edition = "2018"
+license = "MIT"
+
+[dependencies]
+config = { version = "0.11.0", default-features = false, features = ["yaml", "toml"] }
+fail = { path = "../fail" }
+log = "0.4.14"
+serde = { version = "1.0.125", default-features = false, features = ["derive"] }
+thiserror = "1.0.25"
+vinyl = { path = "../vinyl" }

@@ -1,0 +1,9 @@
+[package]
+name = "fail"
+version = "0.2.0"
+authors = [
+	"Tyler J. Russell <t@k-cs.co>",
+	"moparisthebest <admin@moparisthebest.com>"
+]
+edition = "2018"
+license = "MIT"
