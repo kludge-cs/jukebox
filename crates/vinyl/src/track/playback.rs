@@ -4,7 +4,12 @@ use crate::{
 	err::PlayerFrameError,
 	fmt::AudioFmt,
 	player::{AudioConfig, AudioPlayerOpts},
+	track::meta::TrackState,
 };
+
+// TODO: implement these (part of main track, not playback)
+pub type StateListener = Option<()>;
+pub type TrackMarker = Option<()>;
 
 pub struct Frame {
 	pub timecode: u64, // time in ms
@@ -78,4 +83,15 @@ pub trait FrameBufFactory {
 		fmt: Box<dyn AudioFmt>,
 		stopping: AtomicBool,
 	) -> dyn FrameBuf;
+}
+
+pub trait TrackExecutor: FrameProvider {
+	fn audio_buffer(&self) -> dyn FrameBuf;
+	fn execute(&self, listener: StateListener);
+	fn stop(&self);
+	fn curr_pos(&self) -> u64;
+	fn seek(&self, timecode: u64) -> u64;
+	fn state(&self) -> TrackState;
+	fn mark(&self, marker: TrackMarker);
+	fn failed_before_load(&self) -> bool;
 }
