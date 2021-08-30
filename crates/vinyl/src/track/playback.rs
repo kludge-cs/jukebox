@@ -1,14 +1,37 @@
-use crate::err::PlayerFrameError;
+use std::sync::atomic::AtomicBool;
 
-// TODO: implement audio formats
-pub type AudioFormat = Box<str>;
+use crate::{
+	err::PlayerFrameError,
+	fmt::AudioFmt,
+	player::{AudioConfig, AudioPlayerOpts},
+};
 
 pub struct Frame {
 	pub timecode: u64, // time in ms
 	pub volume: u8,
 	pub data: Vec<u8>, // byte array of frame data
-	pub format: AudioFormat,
+	pub format: Box<dyn AudioFmt>,
 	pub terminator: bool,
+}
+
+pub struct ProcessingContext {
+	pub config: AudioConfig,
+	pub buf: Box<dyn FrameBuf>,
+	pub opts: AudioPlayerOpts,
+	pub hotswap: bool,
+	pub output_fmt: Box<dyn AudioFmt>,
+}
+
+impl ProcessingContext {
+	pub fn new(
+		config: AudioConfig,
+		buf: Box<dyn FrameBuf>,
+		opts: AudioPlayerOpts,
+		output_fmt: Box<dyn AudioFmt>,
+	) -> Self {
+		let hotswap = config.hotswap.to_owned();
+		ProcessingContext { config, buf, opts, hotswap, output_fmt }
+	}
 }
 
 pub trait FrameProvider {
@@ -28,16 +51,15 @@ pub trait FrameProvider {
 }
 
 pub trait FrameRebuilder {
-	fn rebuild(frame: Frame) -> Frame;
+	fn rebuild(self, frame: Frame) -> Frame;
 }
 
 pub trait FrameConsumer {
 	fn consume(self, frame: Frame) -> Result<(), PlayerFrameError>;
-	fn rebuild<T: FrameRebuilder>(self, rebuilder: T);
+	fn rebuild(self, rebuilder: dyn FrameRebuilder) -> Frame;
 }
 
-pub trait FrameBuffer: FrameProvider + FrameConsumer {
-	fn new(duration: u8, format: AudioFormat, stopping: bool) -> Self;
+pub trait FrameBuf: FrameProvider + FrameConsumer {
 	fn remaining_capacity(&self) -> u8;
 	fn full_capacity(&self) -> u8;
 	fn wait_for_termination(&self) -> Result<(), PlayerFrameError>;
@@ -47,4 +69,13 @@ pub trait FrameBuffer: FrameProvider + FrameConsumer {
 	fn clear(self);
 	fn has_received(&self) -> bool;
 	fn last_input_timecode(&self) -> Option<u64>;
+}
+
+pub trait FrameBufFactory {
+	fn create(
+		&self,
+		buf_duration: u32,
+		fmt: Box<dyn AudioFmt>,
+		stopping: AtomicBool,
+	) -> dyn FrameBuf;
 }
