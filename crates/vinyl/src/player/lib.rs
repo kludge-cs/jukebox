@@ -1,14 +1,12 @@
 use std::sync::{atomic::AtomicU16, Arc};
 
 use crate::{
+	filter::PCMFilterFactory,
 	fmt::{AudioDataFmt, AudioFmt},
 	track::playback::FrameBufFactory,
 };
 
 pub const OPUS_QUALITY_MAX: u8 = 10;
-
-// TODO: implement filters
-pub type PcmFilterFactory = Option<()>;
 
 pub enum ResamplingQuality {
 	HIGH,
@@ -38,7 +36,7 @@ impl Default for AudioConfig {
 
 pub struct AudioPlayerOpts {
 	pub volume: AtomicU16,
-	pub filter_factory: Arc<Option<PcmFilterFactory>>,
+	pub filter_factory: Arc<Option<Box<dyn PCMFilterFactory>>>,
 	pub buf_duration: Arc<Option<u32>>,
 }
 
